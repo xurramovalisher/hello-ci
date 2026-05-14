@@ -1,0 +1,33 @@
+name: Artifacts bilan ishlash
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-va-yuklash:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodni yuklab olish
+        uses: actions/checkout@v4
+
+      - name: Fayl yaratish
+        run: |
+          echo "Bu fayl GitHub Actions tomonidan yaratildi." > natija.txt
+          echo "Loyiha egasi: ${{ secrets.FOYDALANUVCHI_NOMI2 }}" >> natija.txt
+
+      - name: Oddiy test o'tkazish
+        run: |
+          if [ "${{ secrets.FOYDALANUVCHI_NOMI2 }}" == "Alisher" ]; then
+            echo "Test muvaffaqiyatli o'tdi: Foydalanuvchi tasdiqlandi!"
+          else
+            echo "Xato: Secret qiymati mos kelmadi!"
+            exit 1
+          fi
+
+      - name: Faylni Artifact sifatida saqlash
+        uses: actions/upload-artifact@v4
+        with:
+          name: mening-faylim
+          path: natija.txt
