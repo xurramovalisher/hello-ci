@@ -1,4 +1,4 @@
-name: Artifacts bilan ishlash
+name: Yakuniy Pipeline
 
 on:
   push:
@@ -6,28 +6,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-va-yuklash:
+  test-va-artifact:
     runs-on: ubuntu-latest
     steps:
       - name: Kodni yuklab olish
         uses: actions/checkout@v4
 
+      - name: Node.js o'rnatish
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Fayl yaratish
         run: |
-          echo "Bu fayl GitHub Actions tomonidan yaratildi." > natija.txt
-          echo "Loyiha egasi: ${{ secrets.FOYDALANUVCHI_NOMI2 }}" >> natija.txt
+          echo "Loyiha muvaffaqiyatli tekshirildi." > natija.txt
+          echo "Ijrochi: ${{ secrets.FOYDALANUVCHI_NOMI2 }}" >> natija.txt
 
-      - name: Oddiy test o'tkazish
+      - name: Secretni tekshirish
         run: |
           if [ "${{ secrets.FOYDALANUVCHI_NOMI2 }}" == "Alisher" ]; then
-            echo "Test muvaffaqiyatli o'tdi: Foydalanuvchi tasdiqlandi!"
+            echo "Tasdiqlandi!"
           else
-            echo "Xato: Secret qiymati mos kelmadi!"
+            echo "Secret topilmadi!"
             exit 1
           fi
 
-      - name: Faylni Artifact sifatida saqlash
+      - name: Natijani saqlash (Artifact)
         uses: actions/upload-artifact@v4
         with:
-          name: mening-faylim
+          name: yakuniy-natija
           path: natija.txt
